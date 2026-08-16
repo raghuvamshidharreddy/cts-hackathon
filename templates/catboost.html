@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}How CatBoost Works — Car Sence{% endblock %}
+
+{% block content %}
+<div class="cb-page">
+
+  <!-- Header -->
+  <div class="cb-hero">
+    <div class="cb-hero-badge">🌲 Model Architecture</div>
+    <h1 class="cb-hero-title">How Our CatBoost Regressor Works</h1>
+    <p class="cb-hero-sub">From vehicle features to predicted car price — a step-by-step visual guide</p>
+    <div class="cb-hero-links">
+      <a href="/" class="mo-back-btn">← Back to Predictor</a>
+      <a href="/model-outputs" class="mo-btn-secondary">📊 View Model Outputs →</a>
+    </div>
+  </div>
+
+  <!-- Flow Diagram -->
+  <div class="cb-flow">
+
+    <!-- STEP 1: INPUT FEATURES -->
+    <div class="cb-step" id="cb-step-1">
+      <div class="cb-step-header">
+        <div class="cb-step-num">01</div>
+        <div>
+          <div class="cb-step-title">Car Input Features</div>
+          <div class="cb-step-sub">9 input fields collected from the user</div>
+        </div>
+      </div>
+      <div class="cb-feature-grid">
+        <div class="cb-feat-card"><span class="cb-feat-icon">🏷️</span><div class="cb-feat-name">Brand</div><div class="cb-feat-example">e.g. BMW</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🚗</span><div class="cb-feat-name">Model</div><div class="cb-feat-example">e.g. X5</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">📅</span><div class="cb-feat-name">Year</div><div class="cb-feat-example">e.g. 2021</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🛣️</span><div class="cb-feat-name">Mileage</div><div class="cb-feat-example">e.g. 35,000 mi</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">⚙️</span><div class="cb-feat-name">Engine Size</div><div class="cb-feat-example">e.g. 3.0 L</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">⛽</span><div class="cb-feat-name">Fuel Type</div><div class="cb-feat-example">e.g. Petrol</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🔧</span><div class="cb-feat-name">Transmission</div><div class="cb-feat-example">e.g. Automatic</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🚪</span><div class="cb-feat-name">Doors</div><div class="cb-feat-example">e.g. 4</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">👤</span><div class="cb-feat-name">Prev. Owners</div><div class="cb-feat-example">e.g. 1</div></div>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 2: PREPROCESSING -->
+    <div class="cb-step" id="cb-step-2">
+      <div class="cb-step-header">
+        <div class="cb-step-num">02</div>
+        <div>
+          <div class="cb-step-title">Feature Preprocessing</div>
+          <div class="cb-step-sub">Raw inputs are transformed into 59 model-ready features</div>
+        </div>
+      </div>
+      <div class="cb-preproc-grid">
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">🔢</div>
+          <div class="cb-preproc-title">One-Hot Encoding</div>
+          <div class="cb-preproc-desc">Brand, Model, Fuel Type and Transmission are encoded into binary columns — e.g. Brand_BMW = 1, all others = 0</div>
+        </div>
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">📦</div>
+          <div class="cb-preproc-title">Grouping / Binning</div>
+          <div class="cb-preproc-desc">Mileage is grouped into Low / Medium / High bands. Engine Size grouped into Small / Medium / Large. Year grouped into decade ranges.</div>
+        </div>
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">📐</div>
+          <div class="cb-preproc-title">Numeric Passthrough</div>
+          <div class="cb-preproc-desc">Year, Engine Size, Mileage, Doors and Owner Count are passed as raw numeric values alongside their encoded group features.</div>
+        </div>
+      </div>
+      <div class="cb-feat-vector">
+        <div class="cb-feat-vector-label">Output: 59-Feature Vector</div>
+        <div class="cb-feat-vector-chips">
+          <span class="cb-chip">Year</span><span class="cb-chip">Mileage</span><span class="cb-chip">Engine_Size</span><span class="cb-chip">Doors</span><span class="cb-chip">Owner_Count</span><span class="cb-chip">Brand_BMW</span><span class="cb-chip">Brand_Toyota</span><span class="cb-chip">Model_X5</span><span class="cb-chip">Model_Camry</span><span class="cb-chip">Fuel_Electric</span><span class="cb-chip">Trans_Manual</span><span class="cb-chip">Mileage_High</span><span class="cb-chip">Engine_Large</span><span class="cb-chip">Year_2020s</span><span class="cb-chip cb-chip-more">+ 45 more…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 3: CATBOOST MODEL -->
+    <div class="cb-step cb-step--highlight" id="cb-step-3">
+      <div class="cb-step-header">
+        <div class="cb-step-num cb-step-num--yellow">03</div>
+        <div>
+          <div class="cb-step-title">Trained CatBoost Regressor</div>
+          <div class="cb-step-sub">An ensemble of 50 sequential decision trees — each correcting errors from the previous</div>
+        </div>
+      </div>
+
+      <div class="cb-boost-explain">
+        <p class="cb-boost-text">CatBoost builds decision trees <strong>sequentially</strong>. Each tree learns from the residual errors of all previous trees — improving the prediction iteratively.</p>
+      </div>
+
+      <div class="cb-trees">
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">🌱</div>
+          <div class="cb-tree-title">Tree 1</div>
+          <div class="cb-tree-desc">First estimate<br>based on all features</div>
+          <div class="cb-tree-out">Initial prediction</div>
+        </div>
+        <div class="cb-tree-arrow">→</div>
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">🌿</div>
+          <div class="cb-tree-title">Tree 2</div>
+          <div class="cb-tree-desc">Learns from<br>Tree 1's errors</div>
+          <div class="cb-tree-out">Corrects residuals</div>
+        </div>
+        <div class="cb-tree-arrow">→</div>
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">🌳</div>
+          <div class="cb-tree-title">Tree 3</div>
+          <div class="cb-tree-desc">Further refines<br>remaining errors</div>
+          <div class="cb-tree-out">Better estimate</div>
+        </div>
+        <div class="cb-tree-arrow">→</div>
+        <div class="cb-tree-dots">· · ·</div>
+        <div class="cb-tree-arrow">→</div>
+        <div class="cb-tree-card cb-tree-card--final">
+          <div class="cb-tree-icon">🏆</div>
+          <div class="cb-tree-title">Tree 50</div>
+          <div class="cb-tree-desc">Final correction<br>minimal residual</div>
+          <div class="cb-tree-out">Converged</div>
+        </div>
+      </div>
+
+      <div class="cb-training-stat">
+        <div class="cb-tstat">
+          <div class="cb-tstat-val">50</div>
+          <div class="cb-tstat-label">Trees</div>
+        </div>
+        <div class="cb-tstat">
+          <div class="cb-tstat-val">59</div>
+          <div class="cb-tstat-label">Features</div>
+        </div>
+        <div class="cb-tstat">
+          <div class="cb-tstat-val">~267</div>
+          <div class="cb-tstat-label">Final RMSE ($)</div>
+        </div>
+        <div class="cb-tstat">
+          <div class="cb-tstat-val">0.99</div>
+          <div class="cb-tstat-label">R² Score</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 4: ENSEMBLE -->
+    <div class="cb-step" id="cb-step-4">
+      <div class="cb-step-header">
+        <div class="cb-step-num">04</div>
+        <div>
+          <div class="cb-step-title">Combine Tree Predictions</div>
+          <div class="cb-step-sub">All 50 tree outputs are summed to produce the final prediction</div>
+        </div>
+      </div>
+      <div class="cb-ensemble-box">
+        <div class="cb-ensemble-formula">
+          <span class="cb-ens-term">Tree₁</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-term">Tree₂</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-term">Tree₃</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-dots">···</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-term">Tree₅₀</span>
+          <span class="cb-ens-op">=</span>
+          <span class="cb-ens-result">Final Price</span>
+        </div>
+        <p class="cb-ensemble-note">Each tree contributes a small correction. The sum of all corrections converges to the most accurate price estimate the model can produce.</p>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 5: OUTPUT -->
+    <div class="cb-step cb-step--output" id="cb-step-5">
+      <div class="cb-step-header">
+        <div class="cb-step-num cb-step-num--yellow">05</div>
+        <div>
+          <div class="cb-step-title">Predicted Car Price</div>
+          <div class="cb-step-sub">The final estimated market value of the vehicle</div>
+        </div>
+      </div>
+      <div class="cb-output-card">
+        <div class="cb-output-car">🚗</div>
+        <div class="cb-output-label">CatBoost Predicted Price</div>
+        <div class="cb-output-price">$ Estimated Value</div>
+        <div class="cb-output-range">Price range displayed with ±confidence band</div>
+        <a href="/" class="cb-output-cta">Try the Predictor →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Why CatBoost? -->
+  <div class="cb-why-section">
+    <h2 class="cb-why-title">Why CatBoost for Car Price Prediction?</h2>
+    <div class="cb-why-grid">
+      <div class="cb-why-card">
+        <div class="cb-why-icon">🔀</div>
+        <div class="cb-why-title-sm">Handles Categorical Data Natively</div>
+        <p class="cb-why-text">Car features like Brand, Model, Fuel Type and Transmission are categorical. CatBoost is specifically optimized for categorical variables, encoding them internally without requiring manual one-hot encoding at prediction time.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">📈</div>
+        <div class="cb-why-title-sm">Captures Non-Linear Relationships</div>
+        <p class="cb-why-text">Car pricing is not purely linear. A 2021 BMW X5 with 10,000 miles is worth far more than a 2010 Kia Rio with 200,000 miles — but the relationship is complex. CatBoost's ensemble of trees captures these interactions effectively.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">🛡️</div>
+        <div class="cb-why-title-sm">Resistant to Overfitting</div>
+        <p class="cb-why-text">CatBoost uses ordered boosting and symmetric trees to reduce overfitting compared to standard gradient boosting. This improves its ability to generalise to new car listings not seen during training.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">⚡</div>
+        <div class="cb-why-title-sm">Fast Inference</div>
+        <p class="cb-why-text">Once trained, CatBoost generates predictions in milliseconds — ideal for a real-time web application like Car Sence where users expect instant price estimates after form submission.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

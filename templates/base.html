@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Car Sence — Smart insights for smarter drives{% endblock %}</title>
+    <meta name="description" content="Car Sence - AI Used Car Price Prediction & Comparison application powered by Machine Learning.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Mandatory Black Header (#000000) -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="brand-logo">
+                <span class="brand-icon">🚗</span>
+                <span class="brand-name-car">Car</span><span class="brand-name-sence">Sence</span>
+            </a>
+
+            <nav class="header-nav nav-links-desktop" id="headerNav">
+                <a href="/model-outputs" class="nav-link-btn">
+                    <span>📊</span> Model Outputs
+                </a>
+                <a href="/lasso" class="nav-link-btn">
+                    <span>📈</span> How Lasso Works
+                </a>
+                <button type="button" id="tipsBtn" class="nav-link-btn">
+                    <span>💡</span> Tips
+                </button>
+                <button type="button" id="resetBtn" class="nav-link-btn">
+                    <span>🔄</span> Reset All
+                </button>
+            </nav>
+
+            <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation">
+                ☰
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Application Shell -->
+    <main class="app-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Mandatory Black Footer (#000000) -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div>
+                <span class="footer-brand">Car Sence</span> • Smart insights for smarter drives
+            </div>
+            <div>
+                Made with <span class="footer-heart">💛</span> for car lovers
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tips Accessible Modal -->
+    <div class="modal-backdrop" id="tipsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">💡 How to get a better estimate</div>
+                <button type="button" class="close-panel-btn" id="closeTipsModal" style="color: #FFFFFF;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Follow these quick tips for maximum price valuation accuracy:</p>
+                <ul class="modal-tips-list">
+                    <li><span>•</span> Enter the actual odometer reading in miles for best accuracy.</li>
+                    <li><span>•</span> Engine size is in litres (e.g. 2.0L for a typical family car).</li>
+                    <li><span>•</span> Select the exact fuel type — Electric/Hybrid vehicles price differently.</li>
+
+                    <li><span>•</span> You can edit any detail above and click GET PRICE again without losing your inputs!</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-confirm" onclick="document.getElementById('tipsModal').classList.remove('active')">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div class="modal-backdrop" id="resetModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">🔄 Reset All Details?</div>
+                <button type="button" class="close-panel-btn" id="cancelResetCross" style="color: #FFFFFF;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reset all entered car specifications and prediction results?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="cancelResetBtn">Cancel</button>
+                <button type="button" class="btn-modal-confirm" id="confirmResetBtn">Yes, Reset All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.BRAND_MODELS_DATA = {{ brand_models | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

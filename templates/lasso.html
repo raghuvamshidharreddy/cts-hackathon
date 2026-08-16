@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}How Lasso Regression Works — Car Sence{% endblock %}
+
+{% block content %}
+<div class="cb-page">
+
+  <!-- Header -->
+  <div class="cb-hero">
+    <div class="cb-hero-badge">📈 Model Architecture</div>
+    <h1 class="cb-hero-title">How Our Lasso Regression Model Works</h1>
+    <p class="cb-hero-sub">From vehicle features to predicted car price — a step-by-step visual guide</p>
+    <div class="cb-hero-links">
+      <a href="/" class="mo-back-btn">← Back to Predictor</a>
+      <a href="/model-outputs" class="mo-btn-secondary">📊 View Model Outputs →</a>
+    </div>
+  </div>
+
+  <!-- Flow Diagram -->
+  <div class="cb-flow">
+
+    <!-- STEP 1: INPUT FEATURES -->
+    <div class="cb-step" id="cb-step-1">
+      <div class="cb-step-header">
+        <div class="cb-step-num">01</div>
+        <div>
+          <div class="cb-step-title">Car Input Features</div>
+          <div class="cb-step-sub">9 input fields collected from the user</div>
+        </div>
+      </div>
+      <div class="cb-feature-grid">
+        <div class="cb-feat-card"><span class="cb-feat-icon">🏷️</span><div class="cb-feat-name">Brand</div><div class="cb-feat-example">e.g. BMW</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🚗</span><div class="cb-feat-name">Model</div><div class="cb-feat-example">e.g. X5</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">📅</span><div class="cb-feat-name">Year</div><div class="cb-feat-example">e.g. 2021</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🛣️</span><div class="cb-feat-name">Mileage</div><div class="cb-feat-example">e.g. 35,000 mi</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">⚙️</span><div class="cb-feat-name">Engine Size</div><div class="cb-feat-example">e.g. 3.0 L</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">⛽</span><div class="cb-feat-name">Fuel Type</div><div class="cb-feat-example">e.g. Petrol</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🔧</span><div class="cb-feat-name">Transmission</div><div class="cb-feat-example">e.g. Automatic</div></div>
+        <div class="cb-feat-card"><span class="cb-feat-icon">🚪</span><div class="cb-feat-name">Doors</div><div class="cb-feat-example">e.g. 4</div></div>
+
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 2: PREPROCESSING -->
+    <div class="cb-step" id="cb-step-2">
+      <div class="cb-step-header">
+        <div class="cb-step-num">02</div>
+        <div>
+          <div class="cb-step-title">Feature Preprocessing</div>
+          <div class="cb-step-sub">Raw inputs are transformed into 52 model-ready features</div>
+        </div>
+      </div>
+      <div class="cb-preproc-grid">
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">🔢</div>
+          <div class="cb-preproc-title">One-Hot Encoding</div>
+          <div class="cb-preproc-desc">Brand, Model, Fuel Type and Transmission are encoded into binary columns — e.g. Brand_BMW = 1, all others = 0</div>
+        </div>
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">📦</div>
+          <div class="cb-preproc-title">Grouping / Binning</div>
+          <div class="cb-preproc-desc">Mileage is grouped into Low / Medium / High bands. Engine Size grouped into Small / Medium / Large. Year grouped into decade ranges.</div>
+        </div>
+        <div class="cb-preproc-card">
+          <div class="cb-preproc-icon">📐</div>
+          <div class="cb-preproc-title">Numeric Passthrough</div>
+          <div class="cb-preproc-desc">Year, Engine Size, Mileage and Doors are passed as raw numeric values alongside their encoded group features.</div>
+        </div>
+      </div>
+      <div class="cb-feat-vector">
+        <div class="cb-feat-vector-label">Output: 52-Feature Vector</div>
+        <div class="cb-feat-vector-chips">
+          <span class="cb-chip">Year</span><span class="cb-chip">Mileage</span><span class="cb-chip">Engine_Size</span><span class="cb-chip">Doors</span><span class="cb-chip">Brand_BMW</span><span class="cb-chip">Brand_Toyota</span><span class="cb-chip">Model_X5</span><span class="cb-chip">Model_Camry</span><span class="cb-chip">Fuel_Electric</span><span class="cb-chip">Trans_Manual</span><span class="cb-chip">Mileage_High</span><span class="cb-chip">Engine_Large</span><span class="cb-chip">Year_2020s</span><span class="cb-chip cb-chip-more">+ 39 more…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 3: LASSO MODEL -->
+    <div class="cb-step cb-step--highlight" id="cb-step-3">
+      <div class="cb-step-header">
+        <div class="cb-step-num cb-step-num--yellow">03</div>
+        <div>
+          <div class="cb-step-title">Lasso Regression Model</div>
+          <div class="cb-step-sub">A linear regression model with L1 penalty for feature selection</div>
+        </div>
+      </div>
+
+      <div class="cb-boost-explain">
+        <p class="cb-boost-text">Lasso Regression applies a <strong>linear weighted combination</strong> of features with automatic <strong>feature selection</strong>. The L1 penalty shrinks less important feature coefficients to zero, keeping only the most influential features for price prediction.</p>
+      </div>
+
+      <div class="cb-trees">
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">📊</div>
+          <div class="cb-tree-title">Linear Formula</div>
+          <div class="cb-tree-desc">Price = w₁×Year + w₂×Mileage + w₃×Brand + ... + w₅₂×Feature₅₂</div>
+        </div>
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">✂️</div>
+          <div class="cb-tree-title">L1 Penalty</div>
+          <div class="cb-tree-desc">Shrinks coefficients of low-impact features toward zero, reducing model complexity</div>
+        </div>
+        <div class="cb-tree-card">
+          <div class="cb-tree-icon">🎯</div>
+          <div class="cb-tree-title">Optimal Fit</div>
+          <div class="cb-tree-desc">Balances prediction accuracy with model simplicity for better generalization</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 4: COEFFICIENT WEIGHTING -->
+    <div class="cb-step" id="cb-step-4">
+      <div class="cb-step-header">
+        <div class="cb-step-num">04</div>
+        <div>
+          <div class="cb-step-title">Apply Feature Weights</div>
+          <div class="cb-step-sub">Each feature contributes proportionally based on its learned coefficient</div>
+        </div>
+      </div>
+      <div class="cb-ensemble-box">
+        <div class="cb-ensemble-formula">
+          <span class="cb-ens-term">w₁×Year</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-term">w₂×Mileage</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-term">w₃×Brand</span>
+          <span class="cb-ens-op">+</span>
+          <span class="cb-ens-dots">···</span>
+          <span class="cb-ens-op">=</span>
+          <span class="cb-ens-result">Final Price</span>
+        </div>
+        <p class="cb-ensemble-note">Each feature's weight (coefficient) indicates its impact on the final price. Larger weights mean stronger influence on the prediction.</p>
+      </div>
+    </div>
+
+    <div class="cb-arrow-wrap"><div class="cb-arrow">↓</div></div>
+
+    <!-- STEP 5: OUTPUT -->
+    <div class="cb-step cb-step--output" id="cb-step-5">
+      <div class="cb-step-header">
+        <div class="cb-step-num cb-step-num--yellow">05</div>
+        <div>
+          <div class="cb-step-title">Predicted Car Price</div>
+          <div class="cb-step-sub">The final estimated market value of the vehicle</div>
+        </div>
+      </div>
+      <div class="cb-output-card">
+        <div class="cb-output-car">🚗</div>
+        <div class="cb-output-label">Lasso Regression Predicted Price</div>
+        <div class="cb-output-price">$ Estimated Value</div>
+        <div class="cb-output-range">Price range displayed with ±confidence band</div>
+        <a href="/" class="cb-output-cta">Try the Predictor →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Why Lasso? -->
+  <div class="cb-why-section">
+    <h2 class="cb-why-title">Why Lasso Regression for Car Price Prediction?</h2>
+    <div class="cb-why-grid">
+      <div class="cb-why-card">
+        <div class="cb-why-icon">🔀</div>
+        <div class="cb-why-title-sm">Strong Linear Relationship</div>
+        <p class="cb-why-text">Car pricing exhibits a strong linear relationship with Year and Mileage. Lasso Regression exploits this linear correlation effectively, achieving near-perfect R² scores and excellent RMSE values on car price prediction data.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">✂️</div>
+        <div class="cb-why-title-sm">Automatic Feature Selection</div>
+        <p class="cb-why-text">Lasso's L1 penalty automatically identifies and eliminates irrelevant features by shrinking their coefficients to zero. This keeps the model interpretable and focused on the features that truly matter for price prediction.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">🛡️</div>
+        <div class="cb-why-title-sm">Resistant to Overfitting</div>
+        <p class="cb-why-text">By penalizing model complexity, Lasso avoids overfitting — a common issue in machine learning. It generalizes well to new, unseen car listings not encountered during training.</p>
+      </div>
+      <div class="cb-why-card">
+        <div class="cb-why-icon">⚡</div>
+        <div class="cb-why-title-sm">Fast Inference & Simple</div>
+        <p class="cb-why-text">Lasso generates predictions in microseconds with minimal computation. Its simplicity makes it ideal for real-time applications like Car Sence, where users expect instant price estimates after submitting the form.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

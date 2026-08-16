@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+
+{% block title %}Model Outputs — Car Sence{% endblock %}
+
+{% block content %}
+<div class="mo-page">
+
+  <!-- Page Header -->
+  <div class="mo-hero">
+    <div class="mo-hero-badge">📊 Research & Results</div>
+    <h1 class="mo-hero-title">Model Training &amp; Prediction Outputs</h1>
+    <p class="mo-hero-sub">Explore the training results, evaluation outputs, predictions, and visualizations generated during the development of our Car Price Prediction model.</p>
+    <div class="mo-hero-links">
+      <a href="/" class="mo-back-btn">← Back to Predictor</a>
+      <a href="/lasso" class="mo-btn-secondary">📈 How Lasso Works →</a>
+    </div>
+  </div>
+
+  <!-- Section Nav -->
+  <nav class="mo-section-nav">
+    <a href="#eda" class="mo-snav-link">📈 EDA</a>
+    <a href="#evaluation" class="mo-snav-link">⚖️ Model Evaluation</a>
+    <a href="#predictions" class="mo-snav-link">🎯 Predictions</a>
+    <a href="#importance" class="mo-snav-link">🔑 Feature Importance</a>
+  </nav>
+
+  <!-- ── SECTION 1: EDA ──────────────────────────────────────── -->
+  <section class="mo-section" id="eda">
+    <div class="mo-section-header">
+      <div class="mo-section-icon">📈</div>
+      <div>
+        <h2 class="mo-section-title">Exploratory Data Analysis</h2>
+        <p class="mo-section-desc">Understanding the dataset before model training — patterns, distributions, and relationships between features and car price.</p>
+      </div>
+    </div>
+
+    <!-- Price Distribution -->
+    <div class="mo-card">
+      <div class="mo-card-img-wrap">
+        <img src="/outputs/Screenshot 2026-08-16 212619.png" alt="Car Price Distribution Histogram" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Price Distribution</div>
+        <h3 class="mo-card-title">Car Price Distribution</h3>
+        <p class="mo-card-text">The histogram shows the distribution of car prices across the 10,000-row dataset. Prices range from approximately <strong>$2,000 to $18,000</strong> with a roughly bell-shaped distribution centred around <strong>$8,000–$10,000</strong>.</p>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> The near-normal price distribution means the dataset is well-balanced with no extreme skew, which is favourable for regression model training.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand & Fuel side by side -->
+    <div class="mo-two-col">
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 212633.png" alt="Average Price by Brand" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">Brand Analysis</div>
+          <h3 class="mo-card-title">Average Price by Brand</h3>
+          <p class="mo-card-text">Mean prices are relatively close across all 10 brands ($8,665–$9,016). <strong>Chevrolet</strong> leads at $9,016, while <strong>Honda</strong> is slightly lower at $8,666. The narrow range suggests brand alone is not a dominant price driver.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Brand has a modest effect on price; Year and Mileage are stronger determinants (confirmed by feature importance).</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 212649.png" alt="Average Price by Fuel Type" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">Fuel Type Analysis</div>
+          <h3 class="mo-card-title">Average Price by Fuel Type</h3>
+          <p class="mo-card-text"><strong>Electric</strong> vehicles command the highest average price ($10,032), followed by Hybrid ($9,113), Diesel ($8,117), and Petrol ($8,071).</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Electric &amp; Hybrid vehicles are priced ~$1,000–$2,000 higher than combustion-engine cars — fuel type is a meaningful price signal.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transmission & Doors side by side -->
+    <div class="mo-two-col">
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 212700.png" alt="Average Price by Transmission" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">Transmission Analysis</div>
+          <h3 class="mo-card-title">Average Price by Transmission</h3>
+          <p class="mo-card-text"><strong>Automatic</strong> vehicles average $9,938 — significantly higher than Manual ($8,363) and Semi-Automatic ($8,264). The $1,575 gap between Automatic and Manual is notable.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Automatic transmission commands a ~19% premium over manual, reflecting market preference and modern vehicle trends.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 212746.png" alt="Average Price by Doors" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">Doors Analysis</div>
+          <h3 class="mo-card-title">Average Price by Number of Doors</h3>
+          <p class="mo-card-text">All door configurations (2–5) show similar average prices ($8,746–$8,929), with minimal variation. 2-door vehicles are marginally higher at $8,929.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Door count has minimal direct impact on price — confirming its low feature importance ranking in the trained model.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Analysis -->
+    <div class="mo-card">
+      <div class="mo-card-img-wrap">
+        <img src="/outputs/Screenshot 2026-08-16 212817.png" alt="Average Price by Model" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Model Analysis</div>
+        <h3 class="mo-card-title">Average Price by Car Model (30 Models)</h3>
+        <p class="mo-card-text">Across all 30 models, average prices range from ~$8,581 (BMW X5) to ~$9,099 (Volkswagen Tiguan). The spread is narrow, suggesting similar price ranges across models within this dataset.</p>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> Car model has limited standalone impact — model-specific pricing is better captured in combination with year, mileage and engine size.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Correlation Heatmap -->
+    <div class="mo-card">
+      <div class="mo-card-img-wrap mo-card-img-wrap--wide">
+        <img src="/outputs/Screenshot 2026-08-16 212832.png" alt="Correlation Heatmap" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Correlation Analysis</div>
+        <h3 class="mo-card-title">Feature Correlation Heatmap</h3>
+        <p class="mo-card-text">The heatmap shows pairwise correlations between numeric features and price. <strong>Year</strong> has the strongest positive correlation with price (<strong>+0.66</strong>). <strong>Mileage</strong> has a strong negative correlation (<strong>-0.55</strong>). <strong>Engine Size</strong> has a moderate positive correlation (<strong>+0.36</strong>).</p>
+        <div class="mo-metrics-row">
+          <div class="mo-metric-pill mo-metric-pos">Year → Price: +0.66</div>
+          <div class="mo-metric-pill mo-metric-neg">Mileage → Price: −0.55</div>
+          <div class="mo-metric-pill mo-metric-pos">Engine Size → Price: +0.36</div>
+        </div>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> Newer cars are worth more; higher mileage reduces value. These strong linear correlations explain why linear models also performed well in evaluation.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: MODEL EVALUATION ────────────────────────── -->
+  <section class="mo-section" id="evaluation">
+    <div class="mo-section-header">
+      <div class="mo-section-icon">⚖️</div>
+      <div>
+        <h2 class="mo-section-title">Model Evaluation</h2>
+        <p class="mo-section-desc">11 regression models were trained and evaluated on the same dataset. Results are compared across RMSE, MAE, MSE, R², and execution time.</p>
+      </div>
+    </div>
+
+    <!-- RMSE + R2 side by side -->
+    <div class="mo-two-col">
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 213609.png" alt="Model Performance RMSE" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">RMSE Comparison</div>
+          <h3 class="mo-card-title">Model Performance — RMSE</h3>
+          <p class="mo-card-text">Root Mean Squared Error (lower is better). <strong>Lasso Regression</strong> (our model) achieves excellent RMSE (~120) due to the strong linear relationship between Year/Mileage and Price. KNN performs worst (~1,250). Among ensemble/boosting models, LightGBM and CatBoost perform competitively (~260–280).</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Lasso Regression exploits the strong linear correlation between Year/Mileage and Price. Its low RMSE demonstrates excellent accuracy for this particular regression problem.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 213622.png" alt="Model Performance R2 Score" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">R² Score Comparison</div>
+          <h3 class="mo-card-title">Model Performance — R² Score</h3>
+          <p class="mo-card-text">R² Score (higher is better, max = 1.0). <strong>Linear models including Lasso achieve near-perfect R² (~1.0)</strong>. KNN is the weakest (~0.84). CatBoost, XGBoost, and LightGBM all achieve ~0.99, confirming excellent fit on the test set.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Lasso's R² of ~1.0 means it explains nearly 100% of the variance in car prices — an excellent result for a real-world regression problem.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAE + MSE side by side -->
+    <div class="mo-two-col">
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 213647.png" alt="Model Performance MAE" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">MAE Comparison</div>
+          <h3 class="mo-card-title">Model Performance — MAE</h3>
+          <p class="mo-card-text">Mean Absolute Error (lower is better). <strong>Lasso Regression achieves the lowest MAE (~30)</strong>, meaning predictions are on average $30 away from the true price — an excellent result for used car pricing.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> An average error of ~$30 on prices ranging $2,000–$18,000 represents less than 1% average error for Lasso, demonstrating outstanding prediction accuracy.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mo-card">
+        <div class="mo-card-img-wrap">
+          <img src="/outputs/Screenshot 2026-08-16 213828.png" alt="Model Performance MSE" class="mo-card-img" loading="lazy">
+        </div>
+        <div class="mo-card-body">
+          <div class="mo-card-tag">MSE Comparison</div>
+          <h3 class="mo-card-title">Model Performance — MSE</h3>
+          <p class="mo-card-text">Mean Squared Error penalizes large errors more heavily than MAE. KNN shows the highest MSE (~1.54M). <strong>Lasso Regression achieves one of the lowest MSE values</strong>, competing favorably with ensemble models.</p>
+          <div class="mo-insight">
+            <span class="mo-insight-icon">💡</span>
+            <span><strong>Key Insight:</strong> Lasso's low MSE demonstrates its ability to avoid large individual prediction errors, which is critical for reliable and trustworthy car price estimates.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Execution Time -->
+    <div class="mo-card">
+      <div class="mo-card-img-wrap mo-card-img-wrap--wide">
+        <img src="/outputs/Screenshot 2026-08-16 214239.png" alt="Execution Times for Different Models" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Training Efficiency</div>
+        <h3 class="mo-card-title">Model Training Execution Times</h3>
+        <p class="mo-card-text">Training time comparison across all 11 models. Random Forest is the slowest (~11 seconds). <strong>Lasso Regression trains near-instantly (&lt;0.05 seconds)</strong> — the fastest among all models while maintaining excellent prediction quality.</p>
+        <div class="mo-metrics-row">
+          <div class="mo-metric-pill">LR: ~0.05s</div>
+          <div class="mo-metric-pill">RF: ~11s</div>
+          <div class="mo-metric-pill mo-metric-pos">Lasso: ~0.05s</div>
+        </div>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> Lasso offers an unbeatable speed-to-accuracy ratio. It trains in ~0.05 seconds while achieving R² near 1.0 — making it ideal for production deployment.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: PREDICTIONS ─────────────────────────────── -->
+  <section class="mo-section" id="predictions">
+    <div class="mo-section-header">
+      <div class="mo-section-icon">🎯</div>
+      <div>
+        <h2 class="mo-section-title">Actual vs. Predicted Prices</h2>
+        <p class="mo-section-desc">Sample of 2,000 test-set predictions showing predicted price, actual price, and the difference.</p>
+      </div>
+    </div>
+
+    <div class="mo-card">
+      <div class="mo-card-img-wrap mo-card-img-wrap--wide">
+        <img src="/outputs/Screenshot 2026-08-16 213922.png" alt="Predicted vs True Price Table" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Prediction Results</div>
+        <h3 class="mo-card-title">Lasso Regression — Predicted vs True Prices (Test Set)</h3>
+        <p class="mo-card-text">This table shows a sample of predictions from the 2,000-row test set. Each row contains the <strong>Predicted Price</strong>, the <strong>True Price</strong>, and the <strong>Difference</strong> (error). Sample observations:</p>
+        <div class="mo-pred-examples">
+          <div class="mo-pred-row">
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Predicted</div>
+              <div class="mo-pred-val">$10,502</div>
+            </div>
+            <div class="mo-pred-vs">vs</div>
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Actual</div>
+              <div class="mo-pred-val">$10,308</div>
+            </div>
+            <div class="mo-pred-diff mo-pred-diff--small">Δ −$195</div>
+          </div>
+          <div class="mo-pred-row">
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Predicted</div>
+              <div class="mo-pred-val">$9,159</div>
+            </div>
+            <div class="mo-pred-vs">vs</div>
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Actual</div>
+              <div class="mo-pred-val">$9,144</div>
+            </div>
+            <div class="mo-pred-diff mo-pred-diff--small">Δ −$15</div>
+          </div>
+          <div class="mo-pred-row">
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Predicted</div>
+              <div class="mo-pred-val">$5,432</div>
+            </div>
+            <div class="mo-pred-vs">vs</div>
+            <div class="mo-pred-col">
+              <div class="mo-pred-label">Actual</div>
+              <div class="mo-pred-val">$5,447</div>
+            </div>
+            <div class="mo-pred-diff mo-pred-diff--small">Δ +$15</div>
+          </div>
+        </div>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> Across 2,000 test samples, predictions are consistently close to actual values. Most errors are well under $500, and many are under $200 — demonstrating the model's reliable estimation capability.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: FEATURE IMPORTANCE ─────────────────────── -->
+  <section class="mo-section" id="importance">
+    <div class="mo-section-header">
+      <div class="mo-section-icon">🔑</div>
+      <div>
+        <h2 class="mo-section-title">What Drives Car Price?</h2>
+        <p class="mo-section-desc">Feature coefficients from the trained Lasso Regression model — revealing which factors most influence the predicted price.</p>
+      </div>
+    </div>
+
+    <div class="mo-card">
+      <div class="mo-card-img-wrap mo-card-img-wrap--wide">
+        <img src="/outputs/Screenshot 2026-08-16 214227.png" alt="Feature Importance Chart" class="mo-card-img" loading="lazy">
+      </div>
+      <div class="mo-card-body">
+        <div class="mo-card-tag">Feature Coefficients</div>
+        <h3 class="mo-card-title">Lasso Regression Feature Coefficients — Top 9 Features</h3>
+        <p class="mo-card-text">Lasso Regression coefficients represent the strength and direction of each feature's impact on car price. Positive coefficients increase price, negative coefficients decrease it. Lasso's L1 penalty automatically eliminated irrelevant features (coefficient = 0). The top features shown below have the strongest predictive power:</p>
+        <div class="mo-fi-bars">
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">📅 Year</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:100%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+1245</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">🛣️ Mileage</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:85%; background: linear-gradient(90deg, #f44336, #c62828);"></div></div>
+            <div class="mo-fi-score">-0.145</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">⚙️ Engine Size</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:68%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+845</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">🏷️ Brand (BMW)</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:52%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+640</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">⛽ Fuel Type (Electric)</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:45%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+560</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">🚪 Doors</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:38%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+475</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label"> Transmission (Manual)</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:25%; background: linear-gradient(90deg, #f44336, #c62828);"></div></div>
+            <div class="mo-fi-score">-185</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">📦 Mileage (High)</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:20%; background: linear-gradient(90deg, #f44336, #c62828);"></div></div>
+            <div class="mo-fi-score">-165</div>
+          </div>
+          <div class="mo-fi-row">
+            <div class="mo-fi-label">⚡ Engine Size (Large)</div>
+            <div class="mo-fi-track"><div class="mo-fi-fill" style="width:15%; background: linear-gradient(90deg, #4CAF50, #2E7D32);"></div></div>
+            <div class="mo-fi-score">+125</div>
+          </div>
+        </div>
+        <div class="mo-insight">
+          <span class="mo-insight-icon">💡</span>
+          <span><strong>Key Insight:</strong> <strong>Year (+$1245/year)</strong> and <strong>Mileage (−$0.145/mile)</strong> are the dominant features, with Year alone explaining most price variation. Newer cars command significantly higher prices, while high mileage substantially reduces value. Brand premiums (BMW +$640) and Engine Size (+$845 per liter) also have strong positive effects. Lasso automatically zeroed out irrelevant features, keeping only the most important predictors.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Lightbox -->
+<div class="mo-lightbox" id="moLightbox">
+  <button class="mo-lightbox-close" id="moLightboxClose" aria-label="Close">✕</button>
+  <img src="" alt="" class="mo-lightbox-img" id="moLightboxImg">
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function(){
+  // Section nav highlight
+  const sections = document.querySelectorAll('.mo-section');
+  const navLinks = document.querySelectorAll('.mo-snav-link');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector('.mo-snav-link[href="#'+e.target.id+'"]');
+        if(link) link.classList.add('active');
+      }
+    });
+  }, {threshold: 0.3});
+  sections.forEach(s => observer.observe(s));
+
+  // Lightbox
+  const lightbox = document.getElementById('moLightbox');
+  const lbImg   = document.getElementById('moLightboxImg');
+  const lbClose = document.getElementById('moLightboxClose');
+
+  document.querySelectorAll('.mo-card-img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeLightbox(){
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+})();
+</script>
+{% endblock %}

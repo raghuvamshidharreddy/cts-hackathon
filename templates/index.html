@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Car Sence — Used Car Price Estimator{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Know Your Car's True Worth
+        </h1>
+        <p class="hero-subtitle">
+            Powered by Lasso Regression AI · Instant USD valuation · Side-by-side comparison
+        </p>
+        <div class="hero-badges">
+            <span class="badge">🤖 AI Powered</span>
+            <span class="badge">10 Global Brands</span>
+            <span class="badge">💵 USD Pricing</span>
+            <span class="badge">⚡ Instant Results</span>
+        </div>
+    </div>
+</section>
+
+<!-- Main Grid: Form + Compare Panel -->
+<div class="main-grid single-mode" id="mainGrid">
+
+    <!-- LEFT: Primary Prediction Form -->
+    <div class="form-column">
+        <!-- Form Header -->
+        <div class="form-panel-header">
+            <div>
+                <div class="form-panel-title">🚘 Car Details</div>
+                <div class="form-panel-subtitle">Vehicle 1 — Primary</div>
+            </div>
+            <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">
+                <span>⚖️</span> Compare
+            </button>
+        </div>
+
+        <form id="primaryCarForm" class="car-form" novalidate>
+            <!-- Row: Brand + Model -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="primary_brand">Brand <span class="req">*</span></label>
+                    <select class="form-select" id="primary_brand" name="brand" required>
+                        <option value="" disabled selected>Select Brand</option>
+                        {% for brand in brand_models.keys() %}
+                        <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="primary_model">Model</label>
+                    <select class="form-select" id="primary_model" name="model" disabled>
+                        <option value="" disabled selected>Select Brand First</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row: Year + Engine Size -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="primary_year">Year <span class="req">*</span></label>
+                    <select class="form-select" id="primary_year" name="year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        {% for y in years %}
+                        <option value="{{ y }}" {% if y == 2018 %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="primary_engine_size">Engine Size (L) <span class="req">*</span></label>
+                    <input class="form-input" type="number" id="primary_engine_size" name="engine_size"
+                           placeholder="e.g. 2.0" min="1.0" max="5.0" step="0.1" value="2.0" required>
+                    <span class="form-hint">Litres — e.g. 1.6, 2.0, 3.5</span>
+                </div>
+            </div>
+
+            <!-- Row: Mileage + Fuel Type -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="primary_mileage">Mileage (miles) <span class="req">*</span></label>
+                    <input class="form-input" type="number" id="primary_mileage" name="mileage"
+                           placeholder="e.g. 45000" min="0" max="300000" step="100" value="45000" required>
+                    <span class="form-hint">Odometer reading in miles</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="primary_fuel_type">Fuel Type <span class="req">*</span></label>
+                    <select class="form-select" id="primary_fuel_type" name="fuel_type" required>
+                        {% for ft in fuel_types %}
+                        <option value="{{ ft }}" {% if ft == 'Petrol' %}selected{% endif %}>{{ ft }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row: Transmission + Doors -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="primary_transmission">Transmission <span class="req">*</span></label>
+                    <select class="form-select" id="primary_transmission" name="transmission" required>
+                        {% for t in transmissions %}
+                        <option value="{{ t }}" {% if t == 'Automatic' %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="primary_doors">Doors <span class="req">*</span></label>
+                    <select class="form-select" id="primary_doors" name="doors" required>
+                        {% for d in door_options %}
+                        <option value="{{ d }}" {% if d == 4 %}selected{% endif %}>{{ d }} Doors</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+            <!-- Submit -->
+            <div class="form-actions">
+                <button type="submit" class="btn-predict" id="predictBtn">
+                    <span class="btn-icon">💵</span>
+                    <span class="btn-text">Get Price Estimate</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- RIGHT: Compare Panel (hidden until toggle) -->
+    <div class="compare-panel" id="comparePanel">
+        <div class="compare-panel-header">
+            <div>
+                <div class="form-panel-title">⚖️ Compare Vehicle</div>
+                <div class="form-panel-subtitle">Vehicle 2 — Comparison</div>
+            </div>
+            <button type="button" class="close-panel-btn" id="closeCompareBtn">✕</button>
+        </div>
+
+        <form id="compareCarForm" class="car-form" novalidate>
+            <!-- Row: Brand + Model -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="compare_brand">Brand <span class="req">*</span></label>
+                    <select class="form-select" id="compare_brand" name="brand" required>
+                        <option value="" disabled selected>Select Brand</option>
+                        {% for brand in brand_models.keys() %}
+                        <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="compare_model">Model</label>
+                    <select class="form-select" id="compare_model" name="model" disabled>
+                        <option value="" disabled selected>Select Brand First</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row: Year + Engine -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="compare_year">Year <span class="req">*</span></label>
+                    <select class="form-select" id="compare_year" name="year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        {% for y in years %}
+                        <option value="{{ y }}" {% if y == 2018 %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="compare_engine_size">Engine Size (L) <span class="req">*</span></label>
+                    <input class="form-input" type="number" id="compare_engine_size" name="engine_size"
+                           placeholder="e.g. 2.0" min="1.0" max="5.0" step="0.1" value="2.0" required>
+                </div>
+            </div>
+
+            <!-- Row: Mileage + Fuel -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="compare_mileage">Mileage (miles) <span class="req">*</span></label>
+                    <input class="form-input" type="number" id="compare_mileage" name="mileage"
+                           placeholder="e.g. 45000" min="0" max="300000" step="100" value="45000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="compare_fuel_type">Fuel Type <span class="req">*</span></label>
+                    <select class="form-select" id="compare_fuel_type" name="fuel_type" required>
+                        {% for ft in fuel_types %}
+                        <option value="{{ ft }}" {% if ft == 'Petrol' %}selected{% endif %}>{{ ft }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row: Transmission + Doors -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="compare_transmission">Transmission <span class="req">*</span></label>
+                    <select class="form-select" id="compare_transmission" name="transmission" required>
+                        {% for t in transmissions %}
+                        <option value="{{ t }}" {% if t == 'Automatic' %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="compare_doors">Doors <span class="req">*</span></label>
+                    <select class="form-select" id="compare_doors" name="doors" required>
+                        {% for d in door_options %}
+                        <option value="{{ d }}" {% if d == 4 %}selected{% endif %}>{{ d }} Doors</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-actions">
+                <button type="submit" class="btn-predict btn-predict-compare" id="compareSubmitBtn">
+                    <span class="btn-icon">⚖️</span>
+                    <span class="btn-text">Compare Both</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Illustration Card (right side when compare is off) -->
+    <div class="illustration-card" id="illustrationCard">
+        <div class="illustration-inner">
+            <div class="illustration-car">🚗</div>
+            <div class="illustration-title">Smart Car Valuation</div>
+            <div class="illustration-sub">Fill in the details on the left to instantly get your vehicle's estimated market price.</div>
+            <div class="illustration-stats">
+                <div class="stat-item">
+                    <div class="stat-value">59</div>
+                    <div class="stat-label">AI Features</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Brands</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">99%</div>
+                    <div class="stat-label">R² Score</div>
+                </div>
+            </div>
+            <button type="button" class="btn-compare-trigger" id="triggerCompareFromCard">
+                ⚖️ Compare Two Cars
+            </button>
+            <div class="illus-explore-cards">
+                <a href="/model-outputs" class="illus-explore-card">
+                    <span class="illus-explore-icon">📊</span>
+                    <div>
+                        <div class="illus-explore-title">Model Outputs</div>
+                        <div class="illus-explore-sub">View training &amp; evaluation results</div>
+                    </div>
+                    <span class="illus-explore-arrow">→</span>
+                </a>
+                <a href="/lasso" class="illus-explore-card">
+                    <span class="illus-explore-icon">📈</span>
+                    <div>
+                        <div class="illus-explore-title">How Lasso Works</div>
+                        <div class="illus-explore-sub">See how the model predicts prices</div>
+                    </div>
+                    <span class="illus-explore-arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Section (below form, inputs never cleared) -->
+<div class="results-section" id="resultsSection">
+    <div class="results-section-header">
+        <div class="results-section-title">📊 Prediction Results</div>
+        <button type="button" class="btn-recalculate" id="recalculateBtn">🔁 Recalculate</button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="results-loading" id="resultsLoadingState" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingTextMain">Analyzing your vehicle data...</div>
+        <div class="loading-sub">Lasso Regression model processing 52 features</div>
+    </div>
+
+    <!-- Content State -->
+    <div class="results-content" id="resultsContentState" style="display: none;">
+        <!-- Rendered by JS -->
+    </div>
+</div>
+
+{% endblock %}
